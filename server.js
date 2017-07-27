@@ -1,39 +1,32 @@
 'use strict';
 
-var express = require('express');
-var routes = require('./app/routes/routes.js');
 var mongoose = require('mongoose');
-var passport = require('passport');
-var session = require('express-session');
+var http = require('http');
+var WebSocket = require('ws');
+var app = require('./app.js');
 
-var app = express();
-require('dotenv').load();
-
-require('./app/auth/passport')(passport);
+var port = process.env.PORT || 8080;
 
 mongoose.connect(process.env.MONGO_URI);
 mongoose.Promise = global.Promise;
 
-app.set('view engine', 'ejs');
-app.set('views', 'public/views');
+var server = http.createServer(app);
 
-app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
-app.use('/public', express.static(process.cwd() + '/public'));
-app.use('/css', express.static(process.cwd() + '/public/css'));
-app.use('/ajax', express.static(process.cwd() + '/app/ajax'));
+var wss = new WebSocket.Server({ server: server, path: '/chart' });
 
-app.use(session({
-	secret: 'angryBeavers',
-	resave: false,
-	saveUninitialized: true
-}));
+wss.on('connection', function connection(ws, req) {
+  
+  
+  ws.on('message', function incoming(message) {
+    wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(message);
+    }
+    });
+  });
+  
+});
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-routes(app, passport);
-
-var port = process.env.PORT || 8080;
-app.listen(port,  function () {
-	console.log('Server listening on port ' + port + '...');
+server.listen(port, function() {
+  console.log('Listening on port ' + port);
 });

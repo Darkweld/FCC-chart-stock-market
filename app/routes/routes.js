@@ -74,6 +74,14 @@ module.exports = function(app, passport) {
             res.json(req.user);
 });
 
+    app.route('/getChart')
+        .get(server.getChart);
+        
+    app.route('/addToStock/:stock')
+        .post(server.addToStock);
+
+    app.route('/deleteStock/:stock')
+        .delete(server.deleteStock);
 
 
 

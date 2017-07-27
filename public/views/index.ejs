@@ -6,19 +6,51 @@
     
   </head>
   
+  
   <body>
+    
+    
     <div class =  "link-container">
     <% if (user) { %>
-      <a href = "https://nightlife-coordination-app-darkweld.c9users.io/profile">Profile</a>
-      <a href = "https://nightlife-coordination-app-darkweld.c9users.io/logout">Logout</a>
+      <a href = "/profile">Profile</a>
+      <a href = "/logout">Logout</a>
     <% } else { %>
-      <a href = "https://nightlife-coordination-app-darkweld.c9users.io/login">Login</a>
+      <a href = "/login">Login</a>
     <% } %>
+    </div>
+    
+    <div class = "chart-container" id = 'chart-container'>
+      <canvas id = "Chart"></canvas>
+    </div>
+    <div class = "hover">
+    <div class = "instruction-container" id = 'instruction-container'>
+      <p class = 'instruction'>Drag elements ouside of the red border to delete them from the chart. Otherwise click them to focus on a single stock.</p>
+    </div>
+    <div id = "stock-div-container" class = "stock-div-container">
+      
+    </div>
     </div>
     
     
     
+    <div class = "bottom-div">
+      <p class = "loading displayNone" id = "loading"></p>
+    <div class = 'search-container' id = "searchContainer">
+      <p id = "errors" class = "error displayNone"></p>
+    <form id = "Search" action = "">
+    <input type = 'text' id = 'SearchInput' placeholder = 'enter stock here' class = "searchbar">
+    <input type = "image" src = "/public/images/magnifier.png" class = "searchLogo" alt = "search">
+    </form>
+    </div>
+    </div>
     
+    <p class = attribution>Stock API provided by <a>https://www.alphavantage.co/</a></p>
+    
+    
+    
+    <script type = 'text/javascript' src = "/ajax/requests.js"></script>
+    <script type = 'text/javascript' src= '/node_modules/Chart.bundle.js'></script>
+    <script type = 'text/javascript' src = "/controllers/stockController.js"></script>
     
   </body>
   

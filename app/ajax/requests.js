@@ -1,6 +1,6 @@
 'use strict';
 
-var mainUrl = "https://nightlife-coordination-app-darkweld.c9users.io"
+var mainUrl = "https://stock-market-darkweld.c9users.io"
 
 var xhttp = {
    ready: function ready (fn) {
