@@ -1,6 +1,6 @@
 'use strict';
 
-var mainUrl = "https://stock-market-darkweld.c9users.io"
+var mainUrl = "https://secure-scrubland-29764.herokuapp.com"
 
 var xhttp = {
    ready: function ready (fn) {

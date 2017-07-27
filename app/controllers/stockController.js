@@ -6,14 +6,13 @@
     var container = document.getElementById('stock-div-container');
     var loading = document.getElementById('loading');
     var searchContainer = document.getElementById('searchContainer');
-    var socket = new WebSocket('wss://stock-market-darkweld.c9users.io/chart');
+    var socket = new WebSocket('wss://secure-scrubland-29764.herokuapp.com/chart');
     var lineChart = "";
     var chartData = {
                labels: "",
                datasets: []
             };
     var storedArr = [];
-    var filterArr = [];
             
      function containerText () {
            var text = document.createElement('p');

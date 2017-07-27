@@ -77,7 +77,7 @@ module.exports = function(app, passport) {
     app.route('/getChart')
         .get(server.getChart);
         
-    app.route('/addToStock/:stock')
+    app.route(['/addToStock','/addToStock/:stock'])
         .post(server.addToStock);
 
     app.route('/deleteStock/:stock')

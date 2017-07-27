@@ -199,11 +199,15 @@ function server (passport) {
 
 	};
 	this.addToStock = function(req, res) {
-
+    
+    if (!req.params.stock) {
+    	return res.json({'error':'please enter a stock symbol'});
+    }
+    
 	var test = req.params.stock.toUpperCase();
 		
     
-    if (test === "" || /[^A-Z\-\.]|[\-\.]{2,}?|[A-Z\-\.]{6,}/.test(test)){
+    if (/[^A-Z\-\.]|[\-\.]{2,}?|[A-Z\-\.]{6,}/.test(test)){
       return res.json({'error': "invalid entry"});
     }
     
