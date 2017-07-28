@@ -1,14 +1,14 @@
 {
-  "name": "nightlife",
+  "name": "stocks",
   "version": "1.0.0",
-  "description": "Nightlife Coordination App for FreeCodeCamp",
+  "description": "Stock Market App for FreeCodeCamp",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Darkweld/Build_a_Nightlife_Coordination_App_FreeCodeCamp.git"
+    "url": "git+https://github.com/Darkweld/FCC-chart-stock-market"
   },
   "keywords": [
     "freecodecamp",
@@ -17,9 +17,9 @@
   "author": "Darkweld",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Darkweld/Build_a_Nightlife_Coordination_App_FreeCodeCamp/issues"
+    "url": "https://github.com/Darkweld/FCC-chart-stock-market/issues"
   },
-  "homepage": "https://github.com/Darkweld/Build_a_Nightlife_Coordination_App_FreeCodeCamp#readme",
+  "homepage": "https://github.com/Darkweld/FCC-chart-stock-market#readme",
   "engines": {
     "node": "^v8.2.1"
   },
