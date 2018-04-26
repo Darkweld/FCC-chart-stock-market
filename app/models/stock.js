@@ -6,7 +6,8 @@ var Schema = mongoose.Schema;
 var Stock = new Schema({
     stockName: String,
     lastUpdated: Number,
-    data: Array
+    data: Array,
+    color: String
 });
 
 

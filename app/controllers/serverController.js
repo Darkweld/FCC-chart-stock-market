@@ -5,6 +5,14 @@ var Stock = require('../models/stock');
 var Chart = require('../models/chart');
 var https = require('https');
 
+function colorRandomizer() {
+        let str = "";
+        for (var i = 0; i < 3; i++) {
+            str += Math.round(Math.random() * 255) + ", ";
+        }
+        return "rgba(" + str + "1)";
+}
+
 function callApi(value) {
 
 
@@ -33,6 +41,8 @@ function callApi(value) {
 
 }
 
+
+
 function saveApiToDB(stockJson) {
 
     return new Promise(function(resolve, reject) {
@@ -51,7 +61,8 @@ function saveApiToDB(stockJson) {
                 'stockName': stockJson['Meta Data']['2. Symbol']
             }, {
                 'lastUpdated': date,
-                'data': valuesArray
+                'data': valuesArray,
+		'color': colorRandomizer()
             }, {
                 upsert: true,
                 new: true
