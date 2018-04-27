@@ -1,13 +1,14 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
-var mainUrl = "https://secure-scrubland-29764.herokuapp.com/";
+const mainUrl = "https://secure-scrubland-29764.herokuapp.com/";
+var ws = new WebSocket('wss://stock-market-darkweld.c9users.io/chart');
 
 class Stock extends React.Component {
 	render() {
 		
 		return(
 		<div className = "stock-div" draggable = "true">
-			<p className = "stock-text">{this.props.stockName}</p>
+			<p className = "stock-text">{this.props.symbol}</p>
 		</div>
 		);
 	}
@@ -17,7 +18,7 @@ class Main extends React.Component {
 	constructor() {
 		super();
 		
-		this.state = {stocks: []};
+		this.state = {chartLabels: "", chartData: null};
 		this.canvas = React.createRef();
 		this.changeSearch = this.changeSearch.bind(this);
 		this.submitSearch = this.submitSearch.bind(this);
@@ -25,13 +26,17 @@ class Main extends React.Component {
 	}
 	
 	componentDidMount() {
-		let canvas = ReactDOM.findDOMNode(this.refs.canvas).getContext("2d");
-		this.getCharts();
+		this.setState({canvas : ReactDOM.findDOMNode(this.refs.canvas).getContext("2d")});
+		
+		ws.onopen = () => this.getCharts();
+		
+		ws.onmessage = () => this.getCharts();
+		
 	}
 	
 	getCharts() {
 		
-		fetch("https://secure-scrubland-29764.herokuapp.com/getChart")
+		fetch(mainUrl)
 		.then(response => response.json())
 		.then(data => {
 		
@@ -43,25 +48,59 @@ class Main extends React.Component {
                     fill: false
 		})) : null;
 		
-		return this.setState({chartLabels : data.dateLabelArray, chartData: map});
-		
-		});
+		if (this.state.chart) {
+			(map) ? this.state.chart.update() : this.state.chart.destroy();
+			return this.setState({chartLabels : data.dateLabelArray, chartData: map});
+		} else {
+			return this.setState({chartLabels : data.dateLabelArray, chartData: map, 
+			chart: createGraph(this.state.canvas, this.state.chartLabels, this.state.chartData)});
+		}	
+	});
 		
 	}
 	
-	changeSearch() {
+	changeSearch(e) {
+		this.setState({search: e.target.value})
+	}
+	
+	submitSearch(e) {
+		fetch(mainUrl + "/addToStock/" + this.state.search, {method: "POST", credentials: "include"})
+		.then(response => response.json())
+		.then(data => {
+			if (data.error) return alert(data.error);
+			ws.send("added stock");
+		}
+	}
+	
+	submitDelete(symbol) {
+		fetch(mainUrl + "/deleteStock/" + symbol, {method: "POST", credentials: "include"})
+		.then(response => response.json())
+		.then(data => {
+			if (data.error) return alert(data.error);
+			ws.send("deleted stock");
+		}
+	}
+	
+	stockClick(e, symbol) {
+		this.setState({selected: symbol});
+	}
+	
+	keyDown(e, symbol) {
+		/* key for delete is 46 */
+		
+		if (e.keyCode === 46) return submitDelete(symbol);
+		
 		
 	}
 	
-	submitSearch() {
-		
-	}
+	
+	/////////////////////////////////////////////////////////////////
+	/*pressing delete while having a stock selected will delete it.*/
+	/////////////////////////////////////////////////////////////////
 	
 	render() {
-		let stockArray = (this.state)
-		
-		
-		
+	let stockArray = null;
+	if (this.state.chartData) stockArray = this.state.chartData.map(v => <Stock key = {v.stockName} symbol = {v.stockName} />);
 		
 	return (
 	<div className = "mainContainer">
