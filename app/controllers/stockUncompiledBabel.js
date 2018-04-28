@@ -1,13 +1,15 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
-const mainUrl = "https://secure-scrubland-29764.herokuapp.com/";
-var ws = new WebSocket('wss://stock-market-darkweld.c9users.io/chart');
+const mainUrl = "https://secure-scrubland-29764.herokuapp.com";
+var ws = new WebSocket("wss://secure-scrubland-29764.herokuapp.com/chart");
+
+
 
 class Stock extends React.Component {
 	render() {
 		
 		return(
-		<div className = "stock-div" draggable = "true">
+		<div className = "stock-div" draggable = "true" onClick = {e => this.props.click(e, this.props.symbol)}>
 			<p className = "stock-text">{this.props.symbol}</p>
 		</div>
 		);
@@ -18,15 +20,16 @@ class Main extends React.Component {
 	constructor() {
 		super();
 		
-		this.state = {chartLabels: "", chartData: null};
+		this.state = {chartLabels: null, chartData: null, selection: null};
 		this.canvas = React.createRef();
 		this.changeSearch = this.changeSearch.bind(this);
 		this.submitSearch = this.submitSearch.bind(this);
 		this.getCharts = this.getCharts.bind(this);
+		this.keyDown = this.keyDown.bind(this);
 	}
 	
 	componentDidMount() {
-		this.setState({canvas : ReactDOM.findDOMNode(this.refs.canvas).getContext("2d")});
+		this.setState({canvas : this.canvas.current.getContext("2d")});
 		
 		ws.onopen = () => this.getCharts();
 		
@@ -36,25 +39,32 @@ class Main extends React.Component {
 	
 	getCharts() {
 		
-		fetch(mainUrl)
+		fetch(mainUrl + "/getChart")
 		.then(response => response.json())
 		.then(data => {
 		
-		let map = (data) ?  data.stocks.map(v => ({
-                    label: v.stockName,
-                    data: v.data,
-                    borderColor: v.color,
-                    backgroundColor: v.color,
-                    fill: false
-		})) : null;
+		
+		if (data) {
+		let dMap = data.stocks.map(v => ({
+            label: v.stockName,
+            data: v.data,
+            borderColor: v.color,
+            backgroundColor: v.color,
+            fill: false
+		}));
 		
 		if (this.state.chart) {
-			(map) ? this.state.chart.update() : this.state.chart.destroy();
-			return this.setState({chartLabels : data.dateLabelArray, chartData: map});
+				this.setState({chartLabels: data.dateLabelArray, chartData: dMap, selected: null, search: ""});
+				return this.state.chart.update();
+			} else {
+				let chart = createGraph(this.state.canvas, data.dateLabelArray, map);
+				return this.setState({chartLabels : chart.data.labels, chartData: chart.data.datasets, chart: chart, selected: null, search: ""});
+			}
+		
 		} else {
-			return this.setState({chartLabels : data.dateLabelArray, chartData: map, 
-			chart: createGraph(this.state.canvas, this.state.chartLabels, this.state.chartData)});
-		}	
+			if (this.state.chart) this.state.chart.destroy();
+			return this.setState({chart: null, chartLabels: null, chartData: null, selected: null, search: ""});
+		}
 	});
 		
 	}
@@ -69,7 +79,7 @@ class Main extends React.Component {
 		.then(data => {
 			if (data.error) return alert(data.error);
 			ws.send("added stock");
-		}
+		});
 	}
 	
 	submitDelete(symbol) {
@@ -78,34 +88,30 @@ class Main extends React.Component {
 		.then(data => {
 			if (data.error) return alert(data.error);
 			ws.send("deleted stock");
-		}
+		});
 	}
 	
 	stockClick(e, symbol) {
-		this.setState({selected: symbol});
+		let val = (symbol === this.state.selected) ? null : symbol;
+		this.setState({selected: val});
 	}
 	
-	keyDown(e, symbol) {
-		/* key for delete is 46 */
-		
-		if (e.keyCode === 46) return submitDelete(symbol);
-		
-		
+	keyDown(e) {	
+		if (e.key === 46 && this.state.selected) return submitDelete(symbol);
 	}
-	
-	
-	/////////////////////////////////////////////////////////////////
-	/*pressing delete while having a stock selected will delete it.*/
-	/////////////////////////////////////////////////////////////////
 	
 	render() {
 	let stockArray = null;
-	if (this.state.chartData) stockArray = this.state.chartData.map(v => <Stock key = {v.stockName} symbol = {v.stockName} />);
-		
+	if (this.state.chartData) stockArray = this.state.chartData.map(v => {
+	<Stock key = {v.stockName} symbol = {v.stockName} click = {this.stockClick}/>
+	});
+	let divFocus = (this.state.selected) ? true : false;
+	
+	
 	return (
-	<div className = "mainContainer">
+	<div className = "mainContainer" tabIndex="0" onKeyDown = {this.keyDown} autoFocus = {divFocus}>
 		<div className = "chart-container">
-			<canvas ref = {this.canvas} ></canvas>
+			<canvas ref = {this.canvas}></canvas>
 		</div>
 		<div className = "bottomContainer">
 			<p className = "instruction">"Drag elements ouside of the red border to delete them from the chart. Otherwise click them to focus on a single stock."</p>
