@@ -115,39 +115,44 @@ body {
     border: 1px solid white;
     text-decoration: none;
 }
+.mainContainer {
+    width: 90%;
+    margin: 5% auto;
+    background-color: #242424;
+}
 
 .chart-container {
-    position: relative;
-    width: 70%;
-    margin: 5% auto 0 auto;
-    background-color: #242424;
-    padding: 25px;
-    box-sizing: border-box;
+    padding: 5px;
+    border-bottom: 5px solid yellow;
 }
 .stock-div-container {
     display: flex;
     align-items:center;
     justify-content: center;
-    flex-flow: row;
-    background-color: #242424;
-    box-sizing: border-box;
-    border: 3px solid #660000;
+    flex-flow: row wrap;
+    padding: 5px;
 }
 .stock-div {
-    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100px;
     width: 100px;
     margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 5px black;
 }
 .stock-text {
     margin: 0;
     font-size: 25px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-weight: 700;
 }
-.search-container {
-    margin: 10px auto 0 auto;
+.searchContainer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    margin: 1% auto 0 auto;
 }
 .attribution {
     position: relative;
@@ -185,14 +190,8 @@ body {
     margin: 5px 0 5px 0;
     color: red;
 }
-.bottom-div {
-    width: 70%;
-    margin: 0 auto 0 auto;
-    background-color: #242424;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
+.bottomContainer {
+    
 }
 .instruction-container {
     margin: 0 auto 0 auto;
@@ -200,10 +199,9 @@ body {
     padding: 10px 0 10px 0;
 }
 .instruction {
-    opacity: 0;
     color: white;
     text-align: center;
-    margin: 0 5px 0 5px;
+    margin: 5px 0;
 }
 .hover {
     width: 70%;
@@ -218,9 +216,12 @@ body {
     float: right;
     border: 3px solid white;
     box-sizing: border-box;
+    border-radius: 5px;
 }
 .searchbar{
     height: 30px;
     width: 300px;
     margin: 0 10px 0 10px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 25px;
 }

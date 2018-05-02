@@ -30,7 +30,7 @@ var Stock = function (_React$Component) {
 
 			return React.createElement(
 				"div",
-				{ className: "stock-div", draggable: "true", onClick: function onClick(e) {
+				{ className: "stock-div", style: { "backgroundColor": this.props.color }, onClick: function onClick(e) {
 						return _this2.props.click(e, _this2.props.symbol);
 					} },
 				React.createElement(
@@ -77,8 +77,6 @@ var Main = function (_React$Component2) {
 			ws.onmessage = function () {
 				return _this4.getCharts();
 			};
-
-			console.log(this.state);
 		}
 	}, {
 		key: "getCharts",
@@ -102,7 +100,7 @@ var Main = function (_React$Component2) {
 
 					if (_this5.state.chart) {
 						_this5.setState({ chartData: dMap, selected: null, search: "" });
-						chart.data.datasets = dMap;
+						chart.config.data = dMap;
 						return chart.update();
 					} else {
 						chart = createGraph(_this5.state.canvas, data.dateLabelArray, dMap);
@@ -147,9 +145,9 @@ var Main = function (_React$Component2) {
 		key: "stockClick",
 		value: function stockClick(e, symbol) {
 			var val = symbol === this.state.selected ? null : symbol;
-			val ? chart.data.datasets = chart.data.datasets.filer(function (v) {
+			val ? chart.config.data = this.state.chartData.filter(function (v) {
 				return v.label === val;
-			}) : chart.data.datasets = this.state.datasets;
+			}) : chart.config.data = this.state.chartData;
 			chart.update();
 			this.setState({ selected: val });
 		}
@@ -165,7 +163,7 @@ var Main = function (_React$Component2) {
 
 			var stockArray = null;
 			if (this.state.chartData) stockArray = this.state.chartData.map(function (v) {
-				return React.createElement(Stock, { key: v.label, symbol: v.label, click: _this6.stockClick });
+				return React.createElement(Stock, { key: v.label, color: v.borderColor, symbol: v.label, click: _this6.stockClick });
 			});
 			var divFocus = this.state.selected ? true : false;
 
@@ -197,7 +195,7 @@ var Main = function (_React$Component2) {
 					React.createElement(
 						"form",
 						{ onSubmit: this.submitSearch },
-						React.createElement("input", { id: "SearchInput", value: this.state.search, placeholder: "enter stock here", className: "searchbar", type: "text", onChange: this.changeSearch }),
+						React.createElement("input", { id: "SearchInput", value: this.state.search, placeholder: "Enter stock here", className: "searchbar", type: "text", onChange: this.changeSearch }),
 						React.createElement("input", { src: "/public/images/magnifier.png", className: "searchLogo", alt: "search", type: "image" })
 					)
 				)
