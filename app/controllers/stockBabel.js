@@ -100,7 +100,7 @@ var Main = function (_React$Component2) {
 
 					if (_this5.state.chart) {
 						_this5.setState({ chartData: dMap, selected: null, search: "" });
-						chart.config.data = dMap;
+						chart.config.data.datasets = dMap;
 						return chart.update();
 					} else {
 						chart = createGraph(_this5.state.canvas, data.dateLabelArray, dMap);
@@ -145,9 +145,9 @@ var Main = function (_React$Component2) {
 		key: "stockClick",
 		value: function stockClick(e, symbol) {
 			var val = symbol === this.state.selected ? null : symbol;
-			val ? chart.config.data = this.state.chartData.filter(function (v) {
+			val ? chart.config.data.datasets = this.state.chartData.filter(function (v) {
 				return v.label === val;
-			}) : chart.config.data = this.state.chartData;
+			}) : chart.config.data.datasets = this.state.chartData;
 			chart.update();
 			this.setState({ selected: val });
 		}
@@ -162,7 +162,10 @@ var Main = function (_React$Component2) {
 			var _this6 = this;
 
 			var stockArray = null;
-			if (this.state.chartData) stockArray = this.state.chartData.map(function (v) {
+			var datArr = this.state.selected ? this.state.chartData.filter(function (v) {
+				return v.label === _this6.state.selected;
+			}) : this.state.chartData;
+			if (this.state.chartData) stockArray = datArr.map(function (v) {
 				return React.createElement(Stock, { key: v.label, color: v.borderColor, symbol: v.label, click: _this6.stockClick });
 			});
 			var divFocus = this.state.selected ? true : false;
@@ -181,7 +184,7 @@ var Main = function (_React$Component2) {
 					React.createElement(
 						"p",
 						{ className: "instruction" },
-						"\"Click a stock symbol to focus on a single stock. Press delete while a symbol is selected to delete that stock symbol.\""
+						"Click a stock symbol to focus on a single stock. Press delete while a symbol is selected to delete that stock symbol."
 					),
 					React.createElement(
 						"div",
@@ -207,3 +210,4 @@ var Main = function (_React$Component2) {
 }(React.Component);
 
 ReactDOM.render(React.createElement(Main, null), document.getElementById("root"));
+//# sourceMappingURL=../stock-market-react.js.map
